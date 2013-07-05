@@ -1,0 +1,92 @@
+-
+  import nl.flotsam.difr._
+
+  def lineTypeOf(lineChange: LineChange) =
+    lineChange match {
+      case ContextLine(_) => "context"
+      case LineAdded(_) => "added"
+      case LineRemoved(_) => "removed"
+    }
+
+  def prefix(lineChange: LineChange) =
+    lineChange match {
+      case ContextLine(_) => "   "
+      case LineAdded(_) => " + "
+      case LineRemoved(_) => " - "
+    }
+
+
+  def range(info: RangeInformation) = {
+    import info._
+    "@@ -" + oldOffset + "," + oldLength + " +" + newOffset + "," + newLength + " @@"
+  }
+
+  def withLineNo(chunk: ChangeChunk): List[(Option[Int], Option[Int], LineChange)] = {
+    var first = chunk.rangeInformation.oldOffset
+    var second = chunk.rangeInformation.newOffset
+    for (changeLine <- chunk.changeLines) yield changeLine match {
+      case ContextLine(_) =>
+        first += 1
+        second += 1
+        (Some(first - 1), Some(second - 1), changeLine)
+      case LineAdded(_) =>
+        second += 1
+        (None, Some(second - 1), changeLine)
+      case LineRemoved(_) =>
+        first += 1
+        (Some(first - 1), None, changeLine)
+    }
+  }
+
+  val style = load("/style-compressed.css")
+  val editorjs = load("/editor-compressed.js")
+
+
+-@ val diffs: List[GitDiff]
+
+!!! 5
+%html
+  %head
+    %title Difr
+    %meta(charset="utf-8")
+    %link(href="file:///Users/wilfred/workspace/difr/src/main/resources/style.css" rel="stylesheet")
+    -# %style(type="text/css")= unescape(style)
+    %script#editor(type="text/html")
+      .editor
+        .left
+        .middle
+          %textarea#contents
+        .right
+          %a.cancel
+        .clear
+    %script#comments(type="text/html")
+      .comments {{comments}}
+  %body
+    .container
+      %h1 Difr
+      - for (diff <- diffs)
+        .diff
+          .meta
+            %span.file= diff.oldFile
+          .code
+            - for (chunk <- diff.chunks)
+              .chunk
+                .meta
+                  .lineno.first ...
+                  .lineno.second ...
+                  .text><
+                    = range(chunk.rangeInformation) + " "
+                    = chunk.changeLines.headOption.map(_.line)
+                  .clear
+                .lines
+                  - for ((first, second, changeLine) <- withLineNo(chunk).tail)
+                    .line(class={lineTypeOf(changeLine)})
+                      .lineno.first= first.map(_.toString)
+                      .lineno.second= second.map(_.toString)
+                      %code.text= prefix(changeLine) + changeLine.line
+                      .clear
+    %script(src="http://code.jquery.com/jquery-1.10.1.min.js")
+    %script(src="http://cdnjs.cloudflare.com/ajax/libs/ICanHaz.js/0.10/ICanHaz.min.js")
+    %script
+      - unescape(editorjs)
+
