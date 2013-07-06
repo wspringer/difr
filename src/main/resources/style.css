@@ -129,10 +129,11 @@ input:focus, textarea { outline: none !important; }
     width: 14px;
     display: block;
     background: url('cancel.png') top;
+    background-repeat: no-repeat;
 }
 
 .cancel:hover {
-    background-position: 0 14px;
+    background-position: 0 -16px;
 }
 
 .line:hover.added .lineno {

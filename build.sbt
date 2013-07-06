@@ -34,6 +34,7 @@ resourceGenerators in Compile <+= (resourceManaged in Compile, resourceDirectory
                 to.getParentFile().mkdirs()
                 YUICompressor.main(Array("-o", to.toString, from.toString))
             }
+            // For some reason, mapping to _._2 doesn't compile.
             Seq(candidates(0)._2, candidates(1)._2)
     }
 }
