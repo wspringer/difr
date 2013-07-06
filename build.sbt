@@ -1,4 +1,6 @@
 import AssemblyKeys._
+import java.io.File
+import sbt.IO._
 
 assemblySettings
 
@@ -14,3 +16,24 @@ name := "difr"
 version := "0.1-SNAPSHOT"
 
 mainClass in assembly := Some("nl.flotsam.difr.Tool")
+
+resourceGenerators in Compile <+= (resourceManaged in Compile, resourceDirectory in Compile) map { (outDir, inDir) =>
+    import net.nczonline.web.cssembed.CSSEmbed
+    import com.yahoo.platform.yui.compressor.YUICompressor
+    val original = inDir / "style.css"
+    val target = outDir / "style-compressed.css"
+    withTemporaryFile("style", ".css") {
+        embedded =>
+            val embedArgs = Array("-o", embedded.toString, original.toString)
+            CSSEmbed.main(embedArgs)
+            val candidates = List(
+                (inDir / "editor.js") -> (outDir / "editor-min.js"),
+                (embedded) -> (outDir / "style-min.css")
+            )
+            for ((from, to) <- candidates) yield {
+                to.getParentFile().mkdirs()
+                YUICompressor.main(Array("-o", to.toString, from.toString))
+            }
+            Seq(candidates(0)._2, candidates(1)._2)
+    }
+}
