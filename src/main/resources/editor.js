@@ -7,13 +7,14 @@ $().ready(function(){
         if (!editing) {
             var line = $(e.target).closest(".line");
             var editor = ich.editor({});
-            var contents = editor.find("#contents");
+            var contents = editor.find(".contents");
+            var form = editor.find(".form");
             var cancelBtn = editor.find(".cancel");
 
             function hide(fn) {
                 contents.off('keyup');
                 cancelBtn.off('click');
-                editor.slideUp(200, function() {
+                form.slideUp(200, function() {
                     editor.remove();
                     editing = false;
                     if (fn) fn();
@@ -41,7 +42,7 @@ $().ready(function(){
             });
 
             editor.insertAfter(line);
-            editor.slideDown(200);
+            form.slideDown(200);
             cancelBtn.on('click', function() { console.info("Cancelled");cancel(); });
             contents.focus();
             editing = true;

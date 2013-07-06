@@ -87,7 +87,7 @@ tr.meta {
     padding-bottom: 10px;
 }
 
-#contents {
+.contents {
     margin-top: 5px;
     margin-bottom: 5px;
     width: 500px;
@@ -107,10 +107,6 @@ input:focus, textarea { outline: none !important; }
 
 .line:hover .lineno, .line:hover.added .lineno, .line:hover.removed .lineno {
     background-color: #f8eec7;
-}
-
-.editor {
-    display: none;
 }
 
 .editor #contents {
@@ -149,5 +145,8 @@ input:focus, textarea { outline: none !important; }
     -moz-box-shadow: inset 1px 2px 4px 1px #3a3a3a;
     -webkit-box-shadow: inset 1px 2px 4px 1px #3a3a3a;
     box-shadow: inset 1px 2px 4px 1px #555;
+}
+
+.editor .form {
     display: none;
 }
