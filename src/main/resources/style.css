@@ -32,10 +32,16 @@ body {
 tr.meta {
     background-color: #eee;
     color: #666;
-    padding-left: 10px;
-    padding-right: 10px;
+}
+
+tr.meta .file {
     padding-top: 5px;
     padding-bottom: 5px;
+}
+
+td {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .lineno {
@@ -81,6 +87,9 @@ tr.meta {
 .comments {
     background-color: #777;
     color: #f0f0f0;
+}
+
+.comments td {
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 10px;
@@ -116,7 +125,7 @@ input:focus, textarea { outline: none !important; }
 .editor .cancel {
     display: inline-block;
     vertical-align: top;
-    margin-top: 11px;
+    margin-top: 7px;
     margin-left: 10px;
 }
 
