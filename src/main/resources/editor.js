@@ -5,8 +5,7 @@ $().ready(function(){
     $(document).on('click', '.line', function(e) {
         e.preventDefault();
         if (!editing) {
-
-            var line = $(e.target).parent(".line");
+            var line = $(e.target).closest(".line");
             var editor = ich.editor({});
             var contents = editor.find("#contents");
             var cancelBtn = editor.find(".cancel");

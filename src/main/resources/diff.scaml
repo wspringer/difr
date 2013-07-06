@@ -15,16 +15,18 @@
       case LineRemoved(_) => " - "
     }
 
-
-  def range(info: RangeInformation) = {
-    import info._
-    "@@ -" + oldOffset + "," + oldLength + " +" + newOffset + "," + newLength + " @@"
+  def range(chunk: ChangeChunk) = {
+    import chunk.rangeInformation._
+    "@@ -" + oldOffset + "," + oldLength + " +" + newOffset + "," + newLength + " @@" + (chunk.changeLines.headOption.map(_.line) match {
+      case Some(str) => " " + str
+      case None => ""
+    })
   }
 
   def withLineNo(chunk: ChangeChunk): List[(Option[Int], Option[Int], LineChange)] = {
     var first = chunk.rangeInformation.oldOffset
     var second = chunk.rangeInformation.newOffset
-    for (changeLine <- chunk.changeLines) yield changeLine match {
+    for (changeLine <- chunk.changeLines.tail) yield changeLine match {
       case ContextLine(_) =>
         first += 1
         second += 1
@@ -39,54 +41,58 @@
   }
 
   val style = load("/style-compressed.css")
-  val editorjs = load("/editor-compressed.js")
+  val editorjs = load("/editor.js")
 
 
 -@ val diffs: List[GitDiff]
+-@ val ext: Boolean = false
 
 !!! 5
 %html
   %head
     %title Difr
     %meta(charset="utf-8")
-    %link(href="file:///Users/wilfred/workspace/difr/src/main/resources/style.css" rel="stylesheet")
-    -# %style(type="text/css")= unescape(style)
+    - if (ext)
+      %link(href="./style.css" rel="stylesheet")
+    - else
+      %style(type="text/css")= unescape(style)
     %script#editor(type="text/html")
-      .editor
-        .left
-        .middle
+      %tr.editor
+        %td
+        %td
+        %td
           %textarea#contents
-        .right
           %a.cancel
-        .clear
     %script#comments(type="text/html")
-      .comments {{comments}}
+      %tr.comments
+        %td
+        %td
+        %td {{comments}}
   %body
     .container
       %h1 Difr
       - for (diff <- diffs)
         .diff
-          .meta
-            %span.file= diff.oldFile
-          .code
+          %table
+            %tr.meta
+              %td.file(colspan="3")= diff.oldFile
             - for (chunk <- diff.chunks)
-              .chunk
-                .meta
-                  .lineno.first ...
-                  .lineno.second ...
-                  .text><
-                    = range(chunk.rangeInformation) + " "
-                    = chunk.changeLines.headOption.map(_.line)
-                  .clear
-                .lines
-                  - for ((first, second, changeLine) <- withLineNo(chunk).tail)
-                    .line(class={lineTypeOf(changeLine)})
-                      .lineno.first= first.map(_.toString)
-                      .lineno.second= second.map(_.toString)
-                      %code.text= prefix(changeLine) + changeLine.line
-                      .clear
+              %tr.chunk
+                %td.lineno.first ...
+                %td.lineno.second ...
+                %td
+                  %pre= range(chunk)
+              - for ((first, second, changeLine) <- withLineNo(chunk))
+                %tr.line(class={lineTypeOf(changeLine)})
+                  %td.lineno.first= first.map(_.toString)
+                  %td.lineno.second= second.map(_.toString)
+                  %td
+                    %pre= prefix(changeLine) + changeLine.line
     %script(src="http://code.jquery.com/jquery-1.10.1.min.js")
     %script(src="http://cdnjs.cloudflare.com/ajax/libs/ICanHaz.js/0.10/ICanHaz.min.js")
-    %script
-      - unescape(editorjs)
+    - if (ext)
+      %script(src="./editor.js")
+    - else
+      %script
+        - unescape(editorjs)
 
