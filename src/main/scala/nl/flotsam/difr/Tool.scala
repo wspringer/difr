@@ -4,11 +4,15 @@ import org.fusesource.scalate.TemplateEngine
 import org.fusesource.scalate.util.{Resource, ResourceLoader}
 import java.io._
 import org.fusesource.scalate.support.ScalaCompiler
-import org.rogach.scallop.ScallopConf
 import scala.Some
 import scala.Console
 
 
+/**
+ * A tool creating an HTML git diff view with the ability to add annotations.
+ *
+ * @see http://nxt.flotsam.nl/i-beg-to-difr
+ */
 object Tool {
 
   private val engine = new TemplateEngine()
@@ -48,6 +52,9 @@ object Tool {
     )
   }
 
+  /**
+   * Act upon either stdin or the input file given.
+   */
   private def usingIn[T](in: Option[String], fn: (Reader) => T): T = {
     if (in.isDefined) {
       val reader = new FileReader(in.get)
@@ -61,6 +68,9 @@ object Tool {
     }
   }
 
+  /**
+   * Write to either stdout or the output file given.
+   */
   private def usingOut[T](out: Option[String], fn: (PrintWriter) => T): T = {
     if (out.isDefined) {
       val writer = new PrintWriter(new FileWriter(out.get))
