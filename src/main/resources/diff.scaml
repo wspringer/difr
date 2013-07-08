@@ -76,7 +76,7 @@
         .diff
           %table
             %tr.meta
-              %td.file(colspan="3")= diff.oldFile
+              %td.file(colspan="3")= diff.newFile
             - for (chunk <- diff.chunks)
               %tr.chunk
                 %td.lineno.first ...
