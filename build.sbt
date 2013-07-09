@@ -1,6 +1,17 @@
 import AssemblyKeys._
 import java.io.File
 import sbt.IO._
+import ScalateKeys._
+
+seq(scalateSettings:_*)
+
+scalateTemplateConfig in Compile <<= (sourceDirectory in Compile) { base =>
+  Seq(
+    TemplateConfig(base / "resources", Seq.empty, Seq.empty, Some(""))
+  )
+}
+
+defaultExcludes in Compile in unmanagedResources := "*.scaml"
 
 assemblySettings
 

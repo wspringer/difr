@@ -38,8 +38,7 @@ object GitDiffParser extends RegexParsers {
 
   def allDiffs: Parser[List[GitDiff]] = rep1(gitDiff)
 
-  def gitDiff: Parser[GitDiff] = diffHeader ~ fileOperation ~ oldFile ~ newFile ~ diffChunks <~
-    opt("\\ No newline at end of file" ~ newline) ^^ {
+  def gitDiff: Parser[GitDiff] = diffHeader ~ fileOperation ~ oldFile ~ newFile ~ diffChunks ^^ {
     case files ~ op ~ of ~ nf ~ chunks => GitDiff(files, of, nf, op, chunks)
   }
 
@@ -88,7 +87,7 @@ object GitDiffParser extends RegexParsers {
       case a ~ b ~ c ~ d => RangeInformation(a, b getOrElse 0, c, d getOrElse 0)
     }
 
-  def lineChange: Parser[LineChange] = contextLine | addedLine | deletedLine
+  def lineChange: Parser[LineChange] = (contextLine | addedLine | deletedLine) <~ opt("\\ No newline at end of file" ~ newline)
 
   def contextLine: Parser[ContextLine] = " " ~> """.*""".r <~ newline ^^ {
     l => ContextLine(l)

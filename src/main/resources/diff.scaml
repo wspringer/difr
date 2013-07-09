@@ -6,6 +6,7 @@
       case ContextLine(_) => "context"
       case LineAdded(_) => "added"
       case LineRemoved(_) => "removed"
+      case _ => ""
     }
 
   def prefix(lineChange: LineChange) =
