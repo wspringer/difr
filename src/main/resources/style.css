@@ -21,6 +21,7 @@ body {
 
 .diff table {
     border-collapse:collapse;
+    width: 100%;
 }
 
 .diff pre {
