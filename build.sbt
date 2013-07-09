@@ -26,6 +26,8 @@ name := "difr"
 
 version := "0.1-SNAPSHOT"
 
+jarName in assembly := "difr.jar"
+
 mainClass in assembly := Some("nl.flotsam.difr.Tool")
 
 resourceGenerators in Compile <+= (resourceManaged in Compile, resourceDirectory in Compile) map { (outDir, inDir) =>
