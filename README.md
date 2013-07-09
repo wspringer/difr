@@ -20,9 +20,11 @@ To create a review page for the diff between your working copy and what's curren
 
 To create a review page for your feature branch, if you're using git flow:
 
-    git flow feature diff {feature} | java -jar difr.jar | /tmp/review.html
+    git flow feature diff {feature} | java -jar difr.jar > /tmp/review.html
     
-Or if that's too much trouble, pass the HTML produced directly to your browser, using [bcat](http://rtomayko.github.io/bcat/), which is what I do all the time.
+Or if that's too much trouble, pass the HTML produced directly to your browser, using [bcat](http://rtomayko.github.io/bcat/), which is what I do all the time:
+
+    git flow feature diff {feature} | java -jar difr.jar | bcat
 
 To get help on the options `difr` accepts, type:
 
