@@ -4,11 +4,15 @@ If you want to do a code review, and you consider all of the existing tools too 
 
 Once you added all your comments, you simply save the file, or copy the entire page in your email. 
 
-## Sample output
+### Installation
+
+Download a jar [here](https://www.dropbox.com/s/sbqgcseosbqwdzc/difr.jar). Other than that, all you need is Java.
+
+### Sample output
 
 ![Sample output](http://nxt.flotsam.nl/difr.png)
 
-## Typical use cases
+### Typical use cases
 
 To create a review page for the diff between your working copy and what's currently on HEAD:
 
