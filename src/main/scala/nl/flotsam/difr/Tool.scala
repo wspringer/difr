@@ -76,14 +76,14 @@ object Tool {
    */
   private def usingIn[T](in: Option[String], fn: (Reader) => T): T = {
     if (in.isDefined) {
-      val reader = new FileReader(in.get)
+      val reader = new InputStreamReader(new FileInputStream(in.get), "utf-8")
       try {
         fn(reader)
       } finally {
         reader.close()
       }
     } else {
-      fn(Console.in)
+      fn(new InputStreamReader(System.in, "utf-8"))
     }
   }
 
@@ -92,14 +92,14 @@ object Tool {
    */
   private def usingOut[T](out: Option[String], fn: (PrintWriter) => T): T = {
     if (out.isDefined) {
-      val writer = new PrintWriter(new FileWriter(out.get))
+      val writer = new PrintWriter(out.get, "utf-8")
       try {
         fn(writer)
       } finally {
         writer.close()
       }
     } else {
-      fn(new PrintWriter(System.out))
+      fn(new PrintWriter(new OutputStreamWriter(System.out, "utf-8")))
     }
   }
 

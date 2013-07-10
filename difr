@@ -3,4 +3,4 @@
 
 BASEDIR=$(dirname $0)
 
-grep -v '^\\ No newline' | java -jar "$BASEDIR/target/scala-2.9.2/difr-assembly-0.1-SNAPSHOT.jar" 
+grep -v '^\\ No newline' | java -jar "$BASEDIR/target/scala-2.9.2/difr.jar" 
