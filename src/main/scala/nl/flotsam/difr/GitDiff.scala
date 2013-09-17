@@ -22,7 +22,9 @@ package nl.flotsam.difr
 import util.parsing.combinator._
 import java.io.Reader
 
-case class GitDiff(cmd: String, oldFile: String, newFile: String, op: FileOperation, chunks: List[ChangeChunk])
+case class GitDiff(cmd: String, op: FileOperation, details: Option[GitDiffDetails])
+
+case class GitDiffDetails(oldFile: String, newFile: String, chunks: List[ChangeChunk])
 
 sealed trait FileOperation
 
@@ -57,9 +59,18 @@ object GitDiffParser extends RegexParsers {
 
   def allDiffs: Parser[List[GitDiff]] = rep1(gitDiff)
 
-  def gitDiff: Parser[GitDiff] = diffHeader ~ fileOperation ~ oldFile ~ newFile ~ diffChunks ^^ {
-    case files ~ op ~ of ~ nf ~ chunks => GitDiff(files, of, nf, op, chunks)
+  def gitDiff: Parser[GitDiff] = diffHeader ~ fileOperation ~ (gitDiffDetails | gitDiffDetailsMissing) ^^ {
+    case files ~ op ~ details => GitDiff(files, op, details)
   }
+
+  def gitDiffDetails: Parser[Option[GitDiffDetails]] = oldFile ~ newFile ~ diffChunks ^^ {
+    case of ~ nf ~ chunks => Some(GitDiffDetails(of, nf, chunks))
+  }
+
+  def gitDiffDetailsMissing: Parser[Option[GitDiffDetails]] =
+    """Binary[^\n]*\n""".r ^^ {
+      case _ => None
+    }
 
   def diffHeader: Parser[String] =
     """diff --git[^\n]*""".r <~ newline

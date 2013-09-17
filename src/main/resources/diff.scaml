@@ -73,12 +73,12 @@
   %body
     .container
       %h1 Difr
-      - for (diff <- diffs)
+      - for (diff <- diffs; details <- diff.details)
         .diff
           %table
             %tr.meta
-              %td.file(colspan="3")= diff.newFile
-            - for (chunk <- diff.chunks)
+              %td.file(colspan="3")= details.newFile
+            - for (chunk <- details.chunks)
               %tr.chunk
                 %td.lineno.first ...
                 %td.lineno.second ...
